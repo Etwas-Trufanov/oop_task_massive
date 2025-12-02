@@ -9,7 +9,7 @@
 //
 
 // Строка содежащая строку ошибки аргументов
-const std::string input_arg_error = ("Wrong input arguments\nArg's example: -gen quantity range_from range_to\nOr: -f filename\nOr: -d (for direct input)");
+const std::string input_arg_error = ("Wrong input arguments\nArg's example: -gen quantity range_from range_to\nOr: -f filename\nOr: -d (for direct input)\n");
 const std::string output_arg_error = ("Wrong output arguments\nArg's example: -of fileout.txt\n");
 
 // Считывает пользоватеьмкий ввод до "stop" и возвращает вектор
@@ -35,16 +35,33 @@ std::vector<double> get_user_input() {
 // 2 - режим вывода пустой для простого вывода, -of для вывода в файл (после -of идём имя файла результата)
 int main(int argc, char **argv) {
 
+    /*
     for (int i = 0; i < argc; i++) {
         std::cout << argv[i] << "|";
     }
     std::cout << std::endl;
-    // тут ассерт, выключается ключом -DNDEBUG
+    */
+    // тут ассерты, выключается ключом -DNDEBUG
     {
         ars::array<double> *assert_test = new ars::array<double>;
         std::vector<double> tmp = {2, 2, 3};
         assert_test->load_direct_input(tmp);
         assert(assert_test->calc_func() == 3);
+        delete assert_test;
+    }
+
+    {
+        ars::array<double> *assert_test = new ars::array<double>;
+        std::vector<double> tmp = {10, 10, 20, 30, 20, 3};
+        assert_test->load_direct_input(tmp);
+        assert(assert_test->calc_func() == 7);
+        delete assert_test;
+    }
+    {
+        ars::array<double> *assert_test = new ars::array<double>;
+        std::vector<double> tmp = {5, 6, 7};
+        assert_test->load_direct_input(tmp);
+        assert(assert_test->calc_func() == 6);
         delete assert_test;
     }
 
