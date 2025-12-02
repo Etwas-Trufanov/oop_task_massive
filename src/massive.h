@@ -69,9 +69,10 @@ namespace ars {
                 // Закрываем файл
                 f.close();
             }
+
             // Процедура заполнения массива сгенерированными значениями
             // quantity - количество
-            // from_value -
+            // from_value - значение от, to_value значение до
             void load_rand_range(std::size_t quantity, T from_value, T to_value) {
                 // Вообще как я почитал random_device позволяет считывать карту теплового шума с процессора
                 std::random_device rd;
