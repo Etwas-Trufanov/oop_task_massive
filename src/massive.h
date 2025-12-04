@@ -20,6 +20,7 @@ namespace ars {
             // Размер массива
             std::size_t size = 0;
             // Процедура добавления элемента
+            // value - значение
             void add_value(T value) {
                 // Переносим указатель старого массива в новую переменную
                 T *old_data = data;
@@ -39,6 +40,7 @@ namespace ars {
                 }
             }
             // Процедура выделения памяти
+            // quantity - количество
             void alloc_mem(std::size_t quantity) {
                 data = new T[quantity];
                 size = quantity;
@@ -87,6 +89,7 @@ namespace ars {
                 }
             }
             // Процедура загрузки значений из пользовательского ввода
+            // input_massive - на самом деле вектор, а не массив входных значений
             void load_direct_input(std::vector<T> input_massive) {
                 for (std::size_t i = 0; i < input_massive.size(); i++) {
                    add_value(input_massive[i]);
@@ -104,6 +107,8 @@ namespace ars {
                 return tmp;
             }
             // Процедура записи ответа в файл
+            // filename - имя файла
+            // При ошибке бросается исключение
             void calc_func_to_file(std::string filename) {
                 // Создаём файл
                 std::ofstream f(filename);
