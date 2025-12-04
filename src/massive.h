@@ -88,7 +88,7 @@ namespace ars {
             }
             // Процедура загрузки значений из пользовательского ввода
             void load_direct_input(std::vector<T> input_massive) {
-                for (int i = 0; i < input_massive.size(); i++) {
+                for (std::size_t i = 0; i < input_massive.size(); i++) {
                    add_value(input_massive[i]);
                }
             }

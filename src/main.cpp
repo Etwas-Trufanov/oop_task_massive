@@ -65,7 +65,6 @@ int main(int argc, char **argv) {
         delete assert_test;
     }
 
-
     // Экземпляр класса массива
     ars::array<double> array;
     // Переменная хранящая смещение от аргументов ввода
@@ -78,25 +77,27 @@ int main(int argc, char **argv) {
             std::cout << "Enter values, 'stop' for end:\n";
             array.load_direct_input(get_user_input());
             output_point = 2;
-        }
-    } else if (argc >= 3) {
-        if (strcmp(argv[1], "-f") == 0) {
-            // Если из файла
-            try {
-                // Загружаем из файла
-                array.load_from_file(argv[2]);
-                // Устанавливаем точку смещения
-                output_point = 3;
-            } catch (const std::invalid_argument &e) {
-                // При возникновлении исключения, выводим его и завершаем программу.
-                std::cout << &e << std::endl;
-                return 1;
+        } else if (argc >= 3) {
+            if (strcmp(argv[1], "-f") == 0) {
+                // Если из файла
+                try {
+                    // Загружаем из файла
+                    array.load_from_file(argv[2]);
+                    // Устанавливаем точку смещения
+                    output_point = 3;
+                } catch (const std::invalid_argument &e) {
+                    // При возникновлении исключения, выводим его и завершаем программу.
+                    std::cerr << "An exception was encountered: " << e.what() << std::endl;
+                    return 1;
+                }
+            } else if (argc >= 5) {
+                if (strcmp(argv[1], "-gen") == 0) {
+                    // Если случайные числа
+                    array.load_rand_range(std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]));
+                    // Устанавливаем точку смещения
+                    output_point = 5;
+                }
             }
-        } else if ((strcmp(argv[1], "-gen") == 0) and (argc >= 5)) {
-            // Если случайные числа
-            array.load_rand_range(std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]));
-            // Устанавливаем точку смещения
-            output_point = 5;
         }
     } else {
         // Если аргументы не верные, то выводим ошибку и завершаем программу
