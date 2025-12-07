@@ -2,7 +2,7 @@
 CXX := g++
 
 # Флаги компилятора
-CXXFLAGS := -std=c++11 -g -Wall -Wextra
+CXXFLAGS := -std=c++20 -g -Wall -Wextra
 
 # Директории
 SRC_DIR := src
