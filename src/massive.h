@@ -12,6 +12,7 @@
 namespace ars {
     // Класс массива чисел
     template<typename T>
+    // Блокируем все типы данных которые не подходят для вычислений
     requires std::is_arithmetic_v<T>
     class array {
         // Данные и методы доступные только методам класса
@@ -69,8 +70,8 @@ namespace ars {
 
                 T value;
                 while (true) {
-                    if (!(f >> value)) {            // попытка чтения значения
-                        if (f.eof()) break;         // файл закончился
+                    if (!(f >> value)) {            // Пытаемся считать значениеы
+                        if (f.eof()) break;         // Если файл закончился то просто брикаем
                         throw std::invalid_argument(    // Если в файле что-то навалено
                             "Invalid data in file: " + filename
                         );
@@ -148,7 +149,9 @@ namespace ars {
                 // Закрываем файл
                 f.close();
             }
+
             // Процедура вывода массива
+            // Просто выводит всё через пробел
             void print_array() const {
                 for (std::size_t i = 0; i < size; i++) {
                     std::cout << data[i] << " ";
