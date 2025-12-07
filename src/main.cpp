@@ -8,7 +8,7 @@
 
 //
 
-// Строка содежащая строку ошибки аргументов
+// Строка содержащая строку ошибки аргументов
 const std::string input_arg_error = ("Wrong input arguments\nArg's example: -gen quantity range_from range_to\nOr: -f filename\nOr: -d (for direct input)\n");
 const std::string output_arg_error = ("Wrong output arguments\nArg's example: -of fileout.txt\n");
 
@@ -21,10 +21,15 @@ std::vector<double> get_user_input() {
     while (true) {
         std::cin >> value;
         // Проверка на stop
-        if (value == "stop") {
+        if (value == "stop" or value == "q") {
             break;
         }
-        tpm.push_back(stod(value));
+        // Отлавливаем мусор пользователя
+        try {
+            tpm.push_back(std::stod(value));
+        } catch (...) {
+            std::cerr << "Invalid number, try again\n";
+        }
     }
     return tpm;
 }
@@ -35,12 +40,6 @@ std::vector<double> get_user_input() {
 // 2 - режим вывода пустой для простого вывода, -of для вывода в файл (после -of идём имя файла результата)
 int main(int argc, char **argv) {
 
-    /*
-    for (int i = 0; i < argc; i++) {
-        std::cout << argv[i] << "|";
-    }
-    std::cout << std::endl;
-    */
     // тут ассерты, выключается ключом -DNDEBUG
     {
         ars::array<double> *assert_test = new ars::array<double>;
@@ -74,8 +73,17 @@ int main(int argc, char **argv) {
     if (argc >= 2) {
         if (strcmp(argv[1], "-d") == 0) {
             // Пользовательский ввод
-            std::cout << "Enter values, 'stop' for end:\n";
-            array.load_direct_input(get_user_input());
+            std::cout << "Enter values, 'stop' or 'q' for end:\n";
+            std::vector<double> user_input;
+            // Мучаем пользователя пока не введёт норм вектор
+            while (user_input.size() == 0) {
+                user_input = get_user_input();
+                // Если пользователь навалил кринжа (ничего не ввёл)
+                if (user_input.size() == 0) {
+                    std::cout << "Input list is clear, enter values again\n";
+                }
+            }
+            array.load_direct_input(user_input);
             output_point = 2;
         } else if (argc >= 3) {
             if (strcmp(argv[1], "-f") == 0) {
@@ -93,15 +101,27 @@ int main(int argc, char **argv) {
             } else if (argc >= 5) {
                 if (strcmp(argv[1], "-gen") == 0) {
                     // Если случайные числа
-                    array.load_rand_range(std::stod(argv[2]), std::stod(argv[3]), std::stod(argv[4]));
+
+                    // Отлавливаем если пользователь ввёл мусор
+                    try {
+                        array.load_rand_range(std::stoi(argv[2]), std::stod(argv[3]), std::stod(argv[4]));
+                    } catch (const std::invalid_argument &e) {
+                        // Выводим ошибку и завершаем выполнение
+                        std::cerr << "Entered values not valid!" << std::endl;
+                        return 1;
+                    }
+
                     // Устанавливаем точку смещения
                     output_point = 5;
+                } else {
+                    std::cerr << input_arg_error;
+                    return 1;
                 }
             }
         }
     } else {
         // Если аргументы не верные, то выводим ошибку и завершаем программу
-        std::cout << input_arg_error;
+        std::cerr << input_arg_error;
         return 1;
     }
 
@@ -114,14 +134,15 @@ int main(int argc, char **argv) {
         // Пробуем записать
         try {
             array.calc_func_to_file(argv[output_point+1]);
-        } catch (const std::invalid_argument &e) {
+        } catch (const std::runtime_error &e) {
             // При исключении выводим ошибку и завершаем программу
             std::cerr << "An exception was encountered: " << e.what() << std::endl;
             return 1;
         }
     } else {
         // Если пользователь ввёл что-то не понятное
-        std::cout << output_arg_error;
+        std::cerr << output_arg_error;
+        return 1;
     }
 
     return 0;
